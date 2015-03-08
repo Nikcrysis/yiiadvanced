@@ -14,6 +14,7 @@ use yii\data\Pagination;
 use frontend\models\Country;
 use Yii;
 use frontend\models\CountrySearchFormo;
+use yii\db\mssql\QueryBuilder;
 
 class CountryController extends Controller {
     public function actionIndex() {
@@ -36,7 +37,13 @@ class CountryController extends Controller {
         $model = new CountrySearchForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $query = Country::find();
-            $countries = $query->where(['name' => $model->string])->orderBy('population')->all();
+            if (empty($model->string)) {
+                $countries = $query->orderBy('population')->all();
+            }
+            else {
+                $countries = $query->where(array('LIKE','name',  $model->string ,))->orderBy('population')->all();
+            }
+
             return $this->render('search-result', ['model' => $model, 'countries' => $countries]);
         } else {
             // either the page is initially displayed or there is some validation error

@@ -15,7 +15,7 @@ class CountrySearchForm extends Model{
     public $string;
     public function rules(){
         return [
-            [["string"], "required"]
+            [["string"], "string"]
         ];
     }
 } 
